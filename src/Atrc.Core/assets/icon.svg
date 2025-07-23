@@ -1,0 +1,26 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="58" fill="url(#bg)" stroke="#1e40af" stroke-width="2"/>
+  
+  <!-- ATRC Text -->
+  <text x="64" y="45" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">ATRC</text>
+  
+  <!-- Configuration symbol - bracket-like shapes -->
+  <path d="M35 55 L30 55 L30 75 L35 75" stroke="white" stroke-width="3" fill="none"/>
+  <path d="M93 55 L98 55 L98 75 L93 75" stroke="white" stroke-width="3" fill="none"/>
+  
+  <!-- Config lines -->
+  <line x1="40" y1="60" x2="88" y2="60" stroke="white" stroke-width="2" opacity="0.8"/>
+  <line x1="40" y1="65" x2="75" y2="65" stroke="white" stroke-width="2" opacity="0.8"/>
+  <line x1="40" y1="70" x2="82" y2="70" stroke="white" stroke-width="2" opacity="0.8"/>
+  
+  <!-- Variable symbol -->
+  <text x="64" y="88" text-anchor="middle" fill="white" font-family="monospace" font-size="12" opacity="0.9">%var%</text>
+</svg>

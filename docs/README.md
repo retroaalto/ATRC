@@ -184,13 +184,119 @@ chmod +x dotnet-install.sh
 dotnet --version
 ```
 
-### Future C# Build Commands
+### C# Build Commands
+
+The C# project is now available and ready to use:
+
 ```bash
-# When C# project is created
-dotnet restore
-dotnet build
-dotnet test
-dotnet pack  # Create NuGet package
+# Navigate to C# source directory
+cd src
+
+# Restore dependencies
+dotnet restore Atrc.Core.sln
+
+# Build the library
+dotnet build Atrc.Core.sln --configuration Release
+
+# Run tests
+dotnet test Atrc.Core.Tests/Atrc.Core.Tests.csproj
+
+# Create NuGet package
+dotnet pack Atrc.Core/Atrc.Core.csproj --configuration Release
+```
+
+## C# NuGet Package
+
+The ATRC C# library is available as a NuGet package with 100% feature parity to the C++ implementation.
+
+### Installation
+
+```bash
+# Using .NET CLI
+dotnet add package Atrc.Core
+
+# Using Package Manager Console (Visual Studio)
+Install-Package Atrc.Core
+```
+
+### Quick Start
+
+```csharp
+using Atrc.Core;
+using Atrc.Core.Models;
+using Atrc.Core.StandardLibrary;
+
+// Load configuration file
+using var config = new AtrcFileData("config.atrc", ReadMode.ReadOnly);
+
+// Read values with automatic variable substitution
+string dbConnection = config["Database", "ConnectionString"];
+bool debugMode = AtrcConversions.ToBool(config["Application", "Debug"]);
+long maxConnections = AtrcConversions.ToInt64(config["Database", "MaxConnections"]);
+
+// Access variables directly
+var appName = config.GetVariable("app_name")?.Value;
+
+// Iterate through configuration
+foreach (var block in config.Blocks)
+{
+    Console.WriteLine($"[{block.Name}]");
+    foreach (var key in block.Keys)
+    {
+        Console.WriteLine($"  {key.Name} = {key.Value}");
+    }
+}
+```
+
+### Key Features
+
+- **Variable Substitution**: `%variable%` syntax with nested references and circular reference detection
+- **Preprocessor Directives**: `#.IF`, `#.ELIF`, `#.ELSE`, `#.ENDIF` with platform detection (`WINDOWS`, `LINUX`, `UNIX`)
+- **Type Conversions**: Built-in converters for bool, int, double, arrays with robust error handling
+- **Memory Management**: Automatic disposal with `using` statements, no manual cleanup required
+- **Exception Handling**: Structured exceptions for different error types with detailed messages
+- **Thread Safety**: Safe for concurrent read operations, synchronized writes
+- **LINQ Integration**: Query configuration data with LINQ expressions
+- **Time Injection**: `%*%` syntax for dynamic timestamp insertion
+
+### Sample ATRC File
+
+```ini
+# Variables with substitution
+%app_name%=MyApplication
+%version%=1.0.0
+%debug_mode%=true
+
+# Platform-specific paths
+#.IF WINDOWS
+%data_path%=C:\ProgramData\%app_name%
+#.ELIF LINUX
+%data_path%=/usr/local/share/%app_name%
+#.ELSE
+%data_path%=/tmp/%app_name%
+#.ENDIF
+
+[Application]
+Name=%app_name%
+Version=%version%
+Debug=%debug_mode%
+DataPath=%data_path%
+BuildTime=%*%
+
+[Database]
+ConnectionString=Server=localhost;Database=%app_name%
+MaxConnections=10
+EnableSSL=true
+TimeoutSeconds=30
+
+[Features]
+EnableMetrics=true
+EnableCaching=false
+MaxCacheSize=1000
+
+# List-style values
+[SupportedFormats]
+Formats=json,xml,csv,txt
 ```
 
 ## Development Environment
@@ -283,16 +389,149 @@ perf report
 
 ## Documentation
 
-### Additional Resources
-- `USAGE.md` - Library usage examples and API documentation
-- `Phase2-TODO.md` - Detailed C# conversion plan
-- `CLAUDE.md` - Development guidelines for Claude Code
-- `index.html` - Web-based documentation (if available)
+### C# API Reference
 
-### API Documentation
-The main API is defined in:
-- `ATRC/include/ATRC.h` - Complete C/C++ API reference
+The C# library provides extensive API documentation with IntelliSense support:
+
+#### Core Classes
+
+- **`AtrcFileData`**: Main class for loading and manipulating ATRC files
+  ```csharp
+  // Constructors
+  new AtrcFileData(string filePath, ReadMode mode)
+  new AtrcFileData() // Empty file data
+  
+  // Properties
+  IReadOnlyList<AtrcVariable> Variables { get; }
+  IReadOnlyList<AtrcBlock> Blocks { get; }
+  
+  // Indexers
+  string this[string key] { get; } // Get key from any block
+  string this[string blockName, string keyName] { get; set; }
+  ```
+
+- **`AtrcVariable`**: Represents a variable with public/private scoping
+  ```csharp
+  public class AtrcVariable
+  {
+      public string Name { get; }
+      public string Value { get; }
+      public bool IsPublic { get; }
+  }
+  ```
+
+- **`AtrcBlock`**: Configuration block containing keys
+  ```csharp
+  public class AtrcBlock
+  {
+      public string Name { get; }
+      public IReadOnlyList<AtrcKey> Keys { get; }
+  }
+  ```
+
+- **`AtrcKey`**: Key-value pair within a block
+  ```csharp
+  public class AtrcKey
+  {
+      public string Name { get; }
+      public string Value { get; }
+  }
+  ```
+
+#### Key Methods
+
+```csharp
+// File operations
+var config = new AtrcFileData("file.atrc", ReadMode.ReadOnly);
+await var config = AtrcFileData.LoadAsync("file.atrc", ReadMode.ReadOnly);
+
+// Data access
+string value = config["block", "key"];           // Get key value
+string value = config["key"];                    // Get key from any block
+AtrcVariable var = config.GetVariable("name");   // Get variable
+
+// Data modification (requires ReadWrite mode)
+config.AddBlock("NewBlock");
+config.WriteKey("Block", "Key", "Value");
+config.AddVariable("var_name", "value", isPublic: true);
+config.RemoveBlock("BlockName");
+config.SaveToFile("output.atrc");
+
+// Type conversions
+bool result = AtrcConversions.ToBool("true");
+long number = AtrcConversions.ToInt64("42");
+double floating = AtrcConversions.ToDouble("3.14");
+string[] array = AtrcConversions.ToStringArray("item1,item2,item3");
+```
+
+#### Exception Types
+
+- **`AtrcException`**: Base exception for all ATRC errors
+- **`AtrcFileNotFoundException`**: File not found or inaccessible
+- **`AtrcParseException`**: Parse error in ATRC file
+- **`AtrcPreprocessorException`**: Error in preprocessor directives
+- **`AtrcVariableException`**: Variable substitution error (circular references, etc.)
+
+#### Advanced Features
+
+```csharp
+// LINQ queries
+var databaseKeys = config.Blocks
+    .Where(b => b.Name == "Database")
+    .SelectMany(b => b.Keys)
+    .ToDictionary(k => k.Name, k => k.Value);
+
+// Variable substitution with circular reference detection
+var substituted = config.SubstituteVariables("%app_name%/data/%version%");
+
+// Platform-specific configuration
+var platformPath = config["Paths", "DataDirectory"]; // Automatically resolved
+
+// Time injection
+var buildTime = config["Build", "Timestamp"]; // %*% replaced with current time
+```
+
+### Migration Guide
+
+For developers migrating from the C++ version:
+
+- **[`docs/MIGRATION_GUIDE.md`](MIGRATION_GUIDE.md)**: Comprehensive migration guide
+  - API mapping between C++ and C#
+  - Code examples showing before/after patterns
+  - Key differences in memory management and error handling
+  - Step-by-step migration checklist
+
+### Sample Projects
+
+The `samples/` directory contains example projects demonstrating various usage patterns:
+
+#### Console Example (`samples/ConsoleExample/`)
+- Basic console application showing core features
+- File loading, variable substitution, type conversions
+- Includes sample ATRC file with preprocessor directives
+
+To run the sample:
+```bash
+cd samples/ConsoleExample
+dotnet run
+```
+
+### Additional Resources
+
+- **`USAGE.md`**: Library usage examples and patterns
+- **`Phase2-TODO.md`**: Detailed C# conversion project plan
+- **`CLAUDE.md`**: Development guidelines for Claude Code
+- **`index.html`**: Web-based documentation (if available)
+
+### C/C++ API Documentation
+
+The original C++ API is defined in:
+- **`ATRC/include/ATRC.h`**: Complete C/C++ API reference
 - Comments in source files provide implementation details
+
+### Build Documentation
+
+This document (`docs/README.md`) provides comprehensive build instructions for both C++ and C# components.
 
 ## Contributing
 

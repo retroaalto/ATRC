@@ -16,6 +16,7 @@
     <RepositoryUrl>https://github.com/atrc/atrc</RepositoryUrl>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- <PackageIcon>icon.png</PackageIcon> -->
     
     <!-- Documentation -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -46,6 +47,7 @@
   <ItemGroup>
     <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="\" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <!-- <None Include="assets\icon.png" Pack="true" PackagePath="\" /> -->
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,35 @@
+# Sample ATRC Configuration File
+# This demonstrates various ATRC features
+
+# Variables with substitution
+%app_name%=ATRC Console Example
+%version%=1.0.0
+%debug_mode%=true
+
+# Platform-specific configuration (simplified for demo)
+%data_path%=/usr/local/share/%app_name%/data
+
+[Application]
+Name=%app_name%
+Version=%version%
+Debug=%debug_mode%
+DataPath=%data_path%
+
+[Database]
+ConnectionString=Server=localhost;Database=%app_name%;Integrated Security=true
+MaxConnections=10
+TimeoutSeconds=30
+
+[Logging]
+Level=Info
+EnableConsole=%debug_mode%
+LogFile=%data_path%/app.log
+
+[Features]
+EnableMetrics=true
+EnableCaching=false
+MaxCacheSize=1000
+
+# List-style values
+[SupportedFormats]
+Formats=json,xml,csv,txt
