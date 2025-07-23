@@ -1,0 +1,25 @@
+#!ATRC
+# Basic test file with variables, blocks, and keys
+
+# Variables
+%GlobalVar%=GlobalValue
+%NumericVar%=12345
+%BoolVar%=true
+%DoubleVar%=3.14159
+%ListVar%=item1,item2,item3
+
+# Private variable
+[PRIVATE]
+%PrivateVar%=PrivateValue
+
+[BasicBlock]
+SimpleKey=SimpleValue
+NumericKey=42
+BoolKey=false
+DoubleKey=2.71828
+
+[EmptyBlock]
+
+[VariableSubstitutionBlock]
+SubstitutedKey=%GlobalVar% with suffix
+ComplexKey=%GlobalVar%_%NumericVar%_end
