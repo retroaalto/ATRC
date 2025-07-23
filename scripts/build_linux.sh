@@ -14,7 +14,7 @@ ATRC_DIR="${PROJECT_ROOT}/ATRC_${VERSION}"
 # Initialize error handling
 ERROR_ENCOUNTERED=0
 ATTEMPT_COUNT=2
-counter=$1
+counter=${1:-0}
 
 # Array of presets for Linux
 declare -a presets=(
@@ -60,7 +60,7 @@ for preset in "${presets[@]}"; do
     # Copy built library files to the output directory
     echo "Copying .so files to ${ATRC_DIR}/Linux/${atrc_arch}/${build_type}"
 
-    cp -r "${OUT_DIR}/${preset}/build/ATRC/"libATRC.so "${ATRC_DIR}/Linux/${atrc_arch}/${build_type}/libATRC.so"
+    cp -r "${OUT_DIR}/${preset}/build/ATRC/libATRC.so" "${ATRC_DIR}/Linux/${atrc_arch}/${build_type}/libATRC.so"
 done
 
 # Handle build errors

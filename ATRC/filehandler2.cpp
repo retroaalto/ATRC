@@ -8,6 +8,7 @@
 #include <stack>
 #include <vector>
 #include <unordered_set>
+#include <list>
 #define checkblock_success  1
 #define checkblock_failure  0
 #define checkblock_fatal    2
@@ -495,6 +496,7 @@ int end_of_life_add(std::vector<atrc::Block> &blocks, std::vector<atrc::Variable
         }
         // check and add key to block
         check_and_add_key(_line_trim, blocks, reus, variables);
+        return ATRC_CONTINUE;
 }
 
 bool atrc::ParseFile(const std::string &_filename, const std::string &encoding, const std::string &extension, std::vector<atrc::Variable> &variables,std::vector<atrc::Block> &blocks) {
