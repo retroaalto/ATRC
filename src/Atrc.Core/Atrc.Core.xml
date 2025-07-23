@@ -1,0 +1,494 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Atrc.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Atrc.Exceptions.AtrcException">
+            <summary>
+            Base exception for all ATRC-related errors.
+            </summary>
+        </member>
+        <member name="M:Atrc.Exceptions.AtrcException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Atrc.Exceptions.AtrcException"/> class.
+            </summary>
+            <param name="message">The exception message.</param>
+        </member>
+        <member name="M:Atrc.Exceptions.AtrcException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Atrc.Exceptions.AtrcException"/> class.
+            </summary>
+            <param name="message">The exception message.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcIOException">
+            <summary>
+            Exception thrown for file I/O related errors.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcFileNotFoundException">
+            <summary>
+            Exception thrown when an ATRC file is not found.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcFileAccessDeniedException">
+            <summary>
+            Exception thrown when access to an ATRC file is denied.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcFileFormatException">
+            <summary>
+            Exception thrown when an ATRC file has an invalid format.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcParserException">
+            <summary>
+            Exception thrown for parsing-related errors.
+            </summary>
+        </member>
+        <member name="P:Atrc.Exceptions.AtrcParserException.LineNumber">
+            <summary>
+            Gets the line number where the error occurred.
+            </summary>
+        </member>
+        <member name="P:Atrc.Exceptions.AtrcParserException.Column">
+            <summary>
+            Gets the column where the error occurred.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcSyntaxException">
+            <summary>
+            Exception thrown for syntax errors in ATRC files.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcInvalidDirectiveException">
+            <summary>
+            Exception thrown for invalid preprocessor directives.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcCircularReferenceException">
+            <summary>
+            Exception thrown when circular variable references are detected.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcDataException">
+            <summary>
+            Exception thrown for data access errors.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcKeyNotFoundException">
+            <summary>
+            Exception thrown when a requested key is not found.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcInvalidTypeConversionException">
+            <summary>
+            Exception thrown when type conversion fails.
+            </summary>
+        </member>
+        <member name="T:Atrc.Exceptions.AtrcPlatformException">
+            <summary>
+            Exception thrown for platform-specific errors.
+            </summary>
+        </member>
+        <member name="T:Atrc.Core.Models.AtrcBlock">
+            <summary>
+            Represents a block in an ATRC file, which contains a collection of keys.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcBlock.Name">
+            <summary>
+            Gets or sets the name of the block.
+            </summary>
+            <exception cref="T:System.ArgumentException">Thrown when the value is null, empty, or whitespace.</exception>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcBlock.Keys">
+            <summary>
+            Gets the collection of keys in the block.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcBlock.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Atrc.Core.Models.AtrcBlock"/> class.
+            </summary>
+            <param name="name">The name of the block.</param>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcBlock.AddKey(Atrc.Core.Models.AtrcKey)">
+            <summary>
+            Adds a key to the block.
+            </summary>
+            <param name="key">The key to add.</param>
+            <returns>True if the key was added, false if a key with the same name already exists.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcBlock.RemoveKey(System.String)">
+            <summary>
+            Removes a key from the block.
+            </summary>
+            <param name="keyName">The name of the key to remove.</param>
+            <returns>True if the key was removed, false otherwise.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcBlock.FindKey(System.String)">
+            <summary>
+            Finds a key by its name.
+            </summary>
+            <param name="keyName">The name of the key to find.</param>
+            <returns>The <see cref="T:Atrc.Core.Models.AtrcKey"/> if found; otherwise, null.</returns>
+        </member>
+        <member name="T:Atrc.Core.Models.AtrcFileData">
+            <summary>
+            Represents an ATRC file document with variables, blocks, and keys.
+            Equivalent to the C++ ATRC_FD class.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcFileData.Variables">
+            <summary>
+            Gets the collection of variables in the ATRC file.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcFileData.Blocks">
+            <summary>
+            Gets the collection of blocks in the ATRC file.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcFileData.Filename">
+            <summary>
+            Gets or sets the filename of the ATRC file.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcFileData.AutoSave">
+            <summary>
+            Gets or sets a value indicating whether changes should be automatically saved.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcFileData.WriteCheck">
+            <summary>
+            Gets or sets a value indicating whether write operations should be validated.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Atrc.Core.Models.AtrcFileData"/> class.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcFileData.Item(System.String)">
+            <summary>
+            Gets or sets the value of a variable or key using indexer notation.
+            For variables: fileData["variableName"]
+            For keys: fileData["blockName.keyName"]
+            </summary>
+            <param name="path">The variable name or block.key path.</param>
+            <returns>The value of the variable or key.</returns>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcFileData.Item(System.String,System.String)">
+            <summary>
+            Gets or sets the value of a key in a specific block.
+            </summary>
+            <param name="blockName">The name of the block.</param>
+            <param name="keyName">The name of the key.</param>
+            <returns>The value of the key.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.CreateEmpty">
+            <summary>
+            Creates an empty ATRC file data instance.
+            </summary>
+            <returns>A new empty <see cref="T:Atrc.Core.Models.AtrcFileData"/> instance.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.LoadAsync(System.String,Atrc.Core.Models.ReadMode,System.Threading.CancellationToken)">
+            <summary>
+            Loads an ATRC file asynchronously.
+            </summary>
+            <param name="filePath">The path to the ATRC file.</param>
+            <param name="mode">The read mode for the file.</param>
+            <param name="cancellationToken">A cancellation token.</param>
+            <returns>A task that represents the asynchronous load operation.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.ReadAsync(System.String,Atrc.Core.Models.ReadMode,System.Threading.CancellationToken)">
+            <summary>
+            Reads the ATRC file with the specified mode.
+            </summary>
+            <param name="filePath">The path to the ATRC file.</param>
+            <param name="mode">The read mode.</param>
+            <param name="cancellationToken">A cancellation token.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.ReadVariable(System.String)">
+            <summary>
+            Reads the value of a variable.
+            </summary>
+            <param name="variableName">The name of the variable.</param>
+            <returns>The value of the variable, or null if not found.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.ReadKey(System.String,System.String)">
+            <summary>
+            Reads the value of a key in a block.
+            </summary>
+            <param name="blockName">The name of the block.</param>
+            <param name="keyName">The name of the key.</param>
+            <returns>The value of the key, or null if not found.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.DoesExistBlock(System.String)">
+            <summary>
+            Checks if a block exists.
+            </summary>
+            <param name="blockName">The name of the block.</param>
+            <returns>True if the block exists; otherwise, false.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.DoesExistVariable(System.String)">
+            <summary>
+            Checks if a variable exists.
+            </summary>
+            <param name="variableName">The name of the variable.</param>
+            <returns>True if the variable exists; otherwise, false.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.DoesExistKey(System.String,System.String)">
+            <summary>
+            Checks if a key exists in a block.
+            </summary>
+            <param name="blockName">The name of the block.</param>
+            <param name="keyName">The name of the key.</param>
+            <returns>True if the key exists; otherwise, false.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.IsPublic(System.String)">
+            <summary>
+            Checks if a variable is public.
+            </summary>
+            <param name="variableName">The name of the variable.</param>
+            <returns>True if the variable is public; otherwise, false.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.AddBlock(System.String)">
+            <summary>
+            Adds a new block to the file.
+            </summary>
+            <param name="blockName">The name of the block.</param>
+            <returns>True if the block was added; false if it already exists.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.RemoveBlock(System.String)">
+            <summary>
+            Removes a block from the file.
+            </summary>
+            <param name="blockName">The name of the block to remove.</param>
+            <returns>True if the block was removed; otherwise, false.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.AddVariable(System.String,System.String,System.Boolean)">
+            <summary>
+            Adds a new variable to the file.
+            </summary>
+            <param name="variableName">The name of the variable.</param>
+            <param name="value">The value of the variable.</param>
+            <param name="isPublic">Whether the variable is public.</param>
+            <returns>True if the variable was added; false if it already exists.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.RemoveVariable(System.String)">
+            <summary>
+            Removes a variable from the file.
+            </summary>
+            <param name="variableName">The name of the variable to remove.</param>
+            <returns>True if the variable was removed; otherwise, false.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.ModifyVariable(System.String,System.String)">
+            <summary>
+            Modifies the value of an existing variable.
+            </summary>
+            <param name="variableName">The name of the variable.</param>
+            <param name="value">The new value.</param>
+            <returns>True if the variable was modified; false if it doesn't exist.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.AddKey(System.String,System.String,System.String)">
+            <summary>
+            Adds a key to a block.
+            </summary>
+            <param name="blockName">The name of the block.</param>
+            <param name="keyName">The name of the key.</param>
+            <param name="value">The value of the key.</param>
+            <returns>True if the key was added; otherwise, false.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.RemoveKey(System.String,System.String)">
+            <summary>
+            Removes a key from a block.
+            </summary>
+            <param name="blockName">The name of the block.</param>
+            <param name="keyName">The name of the key to remove.</param>
+            <returns>True if the key was removed; otherwise, false.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.ModifyKey(System.String,System.String,System.String)">
+            <summary>
+            Modifies the value of a key in a block.
+            </summary>
+            <param name="blockName">The name of the block.</param>
+            <param name="keyName">The name of the key.</param>
+            <param name="value">The new value.</param>
+            <returns>True if the key was modified; false if it doesn't exist.</returns>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.Dispose">
+            <summary>
+            Releases all resources used by the <see cref="T:Atrc.Core.Models.AtrcFileData"/> class.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcFileData.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:Atrc.Core.Models.AtrcFileData"/> class and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">True to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Atrc.Core.Models.AtrcKey">
+            <summary>
+            Represents a key-value pair within an ATRC block.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcKey.Name">
+            <summary>
+            Gets or sets the name of the key.
+            </summary>
+            <exception cref="T:System.ArgumentException">Thrown when the value is null, empty, or whitespace.</exception>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcKey.Value">
+            <summary>
+            Gets or sets the value of the key.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcKey.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Atrc.Core.Models.AtrcKey"/> class.
+            </summary>
+            <param name="name">The name of the key.</param>
+            <param name="value">The value of the key.</param>
+        </member>
+        <member name="T:Atrc.Core.Models.AtrcVariable">
+            <summary>
+            Represents a variable in an ATRC file.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcVariable.Name">
+            <summary>
+            Gets or sets the name of the variable.
+            </summary>
+            <exception cref="T:System.ArgumentException">Thrown when the value is null, empty, or whitespace.</exception>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcVariable.Value">
+            <summary>
+            Gets or sets the value of the variable.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Models.AtrcVariable.IsPublic">
+            <summary>
+            Gets or sets a value indicating whether the variable is public.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Models.AtrcVariable.#ctor(System.String,System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Atrc.Core.Models.AtrcVariable"/> class.
+            </summary>
+            <param name="name">The name of the variable.</param>
+            <param name="value">The value of the variable.</param>
+            <param name="isPublic">A value indicating whether the variable is public.</param>
+        </member>
+        <member name="T:Atrc.Core.Models.ReadMode">
+            <summary>
+            Specifies the mode for reading an ATRC file.
+            </summary>
+        </member>
+        <member name="F:Atrc.Core.Models.ReadMode.ReadOnly">
+            <summary>
+            Opens a file for reading only. The file must exist.
+            Corresponds to ATRC_READ_ONLY.
+            </summary>
+        </member>
+        <member name="F:Atrc.Core.Models.ReadMode.CreateAndRead">
+            <summary>
+            Creates a new file if it does not exist, otherwise opens the existing file for reading and writing.
+            Corresponds to ATRC_CREATE_READ.
+            </summary>
+        </member>
+        <member name="F:Atrc.Core.Models.ReadMode.ForceRead">
+            <summary>
+            Forces the creation of a new file, overwriting it if it exists.
+            Corresponds to ATRC_FORCE_READ.
+            </summary>
+        </member>
+        <member name="T:Atrc.Core.Parsing.AtrcParser">
+            <summary>
+            Parser for ATRC configuration files.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Parsing.AtrcParser.ParseContent(System.String,Atrc.Core.Models.AtrcFileData)">
+            <summary>
+            Parses ATRC content from a string.
+            </summary>
+            <param name="content">The ATRC file content.</param>
+            <param name="fileData">The AtrcFileData instance to populate.</param>
+            <exception cref="T:Atrc.Exceptions.AtrcParserException">Thrown when parsing fails.</exception>
+        </member>
+        <member name="M:Atrc.Core.Parsing.AtrcParser.ProcessVariableSubstitution(System.String,Atrc.Core.Models.AtrcFileData)">
+            <summary>
+            Processes variable substitution in a value string.
+            </summary>
+            <param name="value">The value string that may contain variable references.</param>
+            <param name="fileData">The ATRC file data containing variables.</param>
+            <returns>The value with variables substituted.</returns>
+        </member>
+        <member name="M:Atrc.Core.Parsing.AtrcParser.ParseFileAsync(System.String,Atrc.Core.Models.ReadMode,System.Threading.CancellationToken)">
+            <summary>
+            Parses an ATRC file asynchronously.
+            </summary>
+            <param name="filePath">The path to the ATRC file.</param>
+            <param name="mode">The read mode.</param>
+            <param name="cancellationToken">A cancellation token.</param>
+            <returns>A task that represents the asynchronous parse operation.</returns>
+        </member>
+        <member name="M:Atrc.Core.Parsing.AtrcParser.ValidateSyntax(System.String)">
+            <summary>
+            Validates ATRC file syntax without creating a full document.
+            </summary>
+            <param name="content">The ATRC content to validate.</param>
+            <returns>True if syntax is valid; otherwise, false.</returns>
+        </member>
+        <member name="M:Atrc.Core.Parsing.AtrcParser.GetParsingStats(System.String)">
+            <summary>
+            Gets parsing statistics for an ATRC file.
+            </summary>
+            <param name="content">The ATRC content.</param>
+            <returns>Parsing statistics.</returns>
+        </member>
+        <member name="T:Atrc.Core.Parsing.AtrcParsingStats">
+            <summary>
+            Statistics about ATRC file parsing.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Parsing.AtrcParsingStats.TotalLines">
+            <summary>
+            Gets or sets the total number of lines.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Parsing.AtrcParsingStats.EmptyLines">
+            <summary>
+            Gets or sets the number of empty lines.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Parsing.AtrcParsingStats.CommentLines">
+            <summary>
+            Gets or sets the number of comment lines.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Parsing.AtrcParsingStats.VariableLines">
+            <summary>
+            Gets or sets the number of variable definition lines.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Parsing.AtrcParsingStats.BlockLines">
+            <summary>
+            Gets or sets the number of block definition lines.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Parsing.AtrcParsingStats.KeyLines">
+            <summary>
+            Gets or sets the number of key definition lines.
+            </summary>
+        </member>
+        <member name="P:Atrc.Core.Parsing.AtrcParsingStats.UnrecognizedLines">
+            <summary>
+            Gets or sets the number of unrecognized lines.
+            </summary>
+        </member>
+    </members>
+</doc>
