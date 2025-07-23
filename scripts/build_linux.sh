@@ -1,8 +1,12 @@
 #!/bin/bash
 
-# Define the root of your project
-cd ..
-PROJECT_ROOT=$(pwd)
+# Define the root of your project - automatically detect from script location
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Change to project root to ensure cmake can find presets and other config files
+cd "$PROJECT_ROOT"
+
 VERSION=$(< "${PROJECT_ROOT}/project/VERSION")
 OUT_DIR="${PROJECT_ROOT}/out"
 ATRC_DIR="${PROJECT_ROOT}/ATRC_${VERSION}"
