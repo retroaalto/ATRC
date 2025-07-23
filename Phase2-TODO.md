@@ -9,7 +9,7 @@ This document outlines the comprehensive plan for converting the ATRC C/C++ conf
 ## Development Approach
 
 ### Tool Strategy
-- **Primary Development Tool**: Gemini CLI (gemini-2.5-pro) for all development tasks
+- **Primary Development Tool**: Gemini CLI (gemini-2.5-pro) for all development, analyzing and planning tasks. Claude Code is orchestrator layer.
 - **Fallback Strategy**: If Gemini CLI fails multiple times on a specific task, temporarily switch to Sonnet
 - **Recovery Protocol**: Return to Gemini CLI as soon as the blocking issue is resolved
 - **Planning & Analysis**: Leverage Gemini's advanced reasoning for architecture decisions and complex problem-solving
