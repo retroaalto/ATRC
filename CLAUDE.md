@@ -2,6 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Claude Code Updates this file automatically.
 ## Project Overview
 
 ATRC is a C/C++ resource/configuration file library written in C++17 with a C wrapper. It processes ATRC files which are configuration files with preprocessing directives similar to C preprocessor but with variable substitution and platform-specific conditionals.

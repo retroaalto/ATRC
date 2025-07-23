@@ -419,13 +419,33 @@
             <param name="fileData">The AtrcFileData instance to populate.</param>
             <exception cref="T:Atrc.Exceptions.AtrcParserException">Thrown when parsing fails.</exception>
         </member>
+        <member name="M:Atrc.Core.Parsing.AtrcParser.ResolveAllVariableSubstitutions(Atrc.Core.Models.AtrcFileData)">
+            <summary>
+            Resolves all variable substitutions in the ATRC file data after all variables and keys have been parsed.
+            </summary>
+            <param name="fileData">The ATRC file data containing variables and keys to resolve.</param>
+        </member>
         <member name="M:Atrc.Core.Parsing.AtrcParser.ProcessVariableSubstitution(System.String,Atrc.Core.Models.AtrcFileData)">
             <summary>
-            Processes variable substitution in a value string.
+            Processes variable substitution in a value string, supporting nested substitutions and circular reference detection.
             </summary>
             <param name="value">The value string that may contain variable references.</param>
             <param name="fileData">The ATRC file data containing variables.</param>
             <returns>The value with variables substituted.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcCircularReferenceException">Thrown when a circular variable reference is detected.</exception>
+            <exception cref="T:Atrc.Exceptions.AtrcParserException">Thrown when a variable is not found or maximum substitution depth is exceeded.</exception>
+        </member>
+        <member name="M:Atrc.Core.Parsing.AtrcParser.ResolveVariableSubstitutionsRecursive(System.String,Atrc.Core.Models.AtrcFileData,System.Collections.Generic.HashSet{System.String},System.Int32)">
+            <summary>
+            Recursively resolves variable substitutions in a string.
+            </summary>
+            <param name="input">The string potentially containing variable references.</param>
+            <param name="fileData">The ATRC file data containing variables.</param>
+            <param name="visitedVariables">A set to track variables already visited in the current resolution path to detect circular references.</param>
+            <param name="depth">The current recursion depth.</param>
+            <returns>The string with all variables substituted.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcCircularReferenceException">Thrown when a circular variable reference is detected.</exception>
+            <exception cref="T:Atrc.Exceptions.AtrcParserException">Thrown when a variable is not found or maximum substitution depth is exceeded.</exception>
         </member>
         <member name="M:Atrc.Core.Parsing.AtrcParser.ParseFileAsync(System.String,Atrc.Core.Models.ReadMode,System.Threading.CancellationToken)">
             <summary>
@@ -489,6 +509,163 @@
             <summary>
             Gets or sets the number of unrecognized lines.
             </summary>
+        </member>
+        <member name="T:Atrc.Core.Preprocessing.ConditionalState">
+            <summary>
+            Represents the state of a conditional block during preprocessing.
+            </summary>
+        </member>
+        <member name="T:Atrc.Core.Preprocessing.AtrcPreprocessor">
+            <summary>
+            Provides functionality for preprocessing ATRC content, including conditional compilation,
+            platform detection, and variable evaluation.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Preprocessing.AtrcPreprocessor.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Atrc.Core.Preprocessing.AtrcPreprocessor"/> class.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Preprocessing.AtrcPreprocessor.InitializePlatformVariables">
+            <summary>
+            Initializes platform-specific variables based on the current operating system.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Preprocessing.AtrcPreprocessor.Preprocess(System.String)">
+            <summary>
+            Preprocesses the given ATRC content, evaluating directives and expressions.
+            </summary>
+            <param name="content">The raw ATRC content as a single string.</param>
+            <returns>The preprocessed content.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcInvalidDirectiveException">Thrown when an invalid preprocessor directive or syntax is encountered.</exception>
+        </member>
+        <member name="M:Atrc.Core.Preprocessing.AtrcPreprocessor.HandleDirective(System.String,System.String)">
+            <summary>
+            Handles a single preprocessor directive.
+            </summary>
+            <param name="directive">The directive keyword (e.g., "IF", "ELIF").</param>
+            <param name="argument">The argument for the directive (e.g., a boolean expression).</param>
+        </member>
+        <member name="M:Atrc.Core.Preprocessing.AtrcPreprocessor.HandleIfDirective(System.String)">
+            <summary>
+            Handles the #.IF directive.
+            </summary>
+            <param name="expression">The boolean expression to evaluate.</param>
+        </member>
+        <member name="M:Atrc.Core.Preprocessing.AtrcPreprocessor.HandleElifDirective(System.String)">
+            <summary>
+            Handles the #.ELIF directive.
+            </summary>
+            <param name="expression">The boolean expression to evaluate.</param>
+        </member>
+        <member name="M:Atrc.Core.Preprocessing.AtrcPreprocessor.HandleElseDirective">
+            <summary>
+            Handles the #.ELSE directive.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Preprocessing.AtrcPreprocessor.HandleEndifDirective">
+            <summary>
+            Handles the #.ENDIF directive.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.Preprocessing.AtrcPreprocessor.HandleErrorDirective(System.String)">
+            <summary>
+            Handles the #.ERROR directive, throwing an exception with the specified message.
+            </summary>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="M:Atrc.Core.Preprocessing.AtrcPreprocessor.EvaluateExpression(System.String)">
+            <summary>
+            Evaluates a boolean expression, substituting variables.
+            Supports basic equality (==), inequality (!=), and boolean literals (0, 1).
+            </summary>
+            <param name="expression">The expression string.</param>
+            <returns>The boolean result of the expression.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcInvalidDirectiveException">Thrown if the expression is malformed or contains unknown variables.</exception>
+        </member>
+        <member name="T:Atrc.Core.StandardLibrary.AtrcConversions">
+            <summary>
+            Provides extension methods for converting string values from ATRC variables and keys
+            into various data types, with robust error handling and support for common formats.
+            </summary>
+        </member>
+        <member name="M:Atrc.Core.StandardLibrary.AtrcConversions.ToBool(System.String)">
+            <summary>
+            Converts the string representation of a logical value to its <see cref="T:System.Boolean"/> equivalent.
+            Supports "true", "false", "1", "0", "yes", "no", "on", "off" (case-insensitive).
+            </summary>
+            <param name="value">The string to convert.</param>
+            <returns>A <see cref="T:System.Boolean"/> equivalent to the value contained in <paramref name="value"/>.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcInvalidTypeConversionException">
+            Thrown when <paramref name="value"/> is not a valid boolean representation.
+            </exception>
+        </member>
+        <member name="M:Atrc.Core.StandardLibrary.AtrcConversions.ToUInt64(System.String)">
+            <summary>
+            Converts the string representation of a number to its <see cref="T:System.UInt64"/> (UInt64) equivalent.
+            </summary>
+            <param name="value">The string to convert.</param>
+            <returns>A <see cref="T:System.UInt64"/> equivalent to the number contained in <paramref name="value"/>.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcInvalidTypeConversionException">
+            Thrown when <paramref name="value"/> is not a valid UInt64 representation.
+            </exception>
+        </member>
+        <member name="M:Atrc.Core.StandardLibrary.AtrcConversions.ToDouble(System.String)">
+            <summary>
+            Converts the string representation of a number to its <see cref="T:System.Double"/> equivalent.
+            </summary>
+            <param name="value">The string to convert.</param>
+            <returns>A <see cref="T:System.Double"/> equivalent to the number contained in <paramref name="value"/>.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcInvalidTypeConversionException">
+            Thrown when <paramref name="value"/> is not a valid double representation.
+            </exception>
+        </member>
+        <member name="M:Atrc.Core.StandardLibrary.AtrcConversions.ToInt(System.String)">
+            <summary>
+            Converts the string representation of a number to its <see cref="T:System.Int32"/> equivalent.
+            </summary>
+            <param name="value">The string to convert.</param>
+            <returns>An <see cref="T:System.Int32"/> equivalent to the number contained in <paramref name="value"/>.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcInvalidTypeConversionException">
+            Thrown when <paramref name="value"/> is not a valid integer representation.
+            </exception>
+        </member>
+        <member name="M:Atrc.Core.StandardLibrary.AtrcConversions.ToDoubleArray(System.String)">
+            <summary>
+            Converts a comma-separated string of numbers to an array of <see cref="T:System.Double"/> values.
+            </summary>
+            <param name="value">The comma-separated string to convert.</param>
+            <returns>An array of <see cref="T:System.Double"/> values.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcInvalidTypeConversionException">
+            Thrown if any part of the string cannot be converted to a double.
+            </exception>
+        </member>
+        <member name="M:Atrc.Core.StandardLibrary.AtrcConversions.ToIntArray(System.String)">
+            <summary>
+            Converts a comma-separated string of numbers to an array of <see cref="T:System.Int32"/> values.
+            </summary>
+            <param name="value">The comma-separated string to convert.</param>
+            <returns>An array of <see cref="T:System.Int32"/> values.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcInvalidTypeConversionException">
+            Thrown if any part of the string cannot be converted to an int.
+            </exception>
+        </member>
+        <member name="M:Atrc.Core.StandardLibrary.AtrcConversions.ToBoolArray(System.String)">
+            <summary>
+            Converts a comma-separated string of logical values to an array of <see cref="T:System.Boolean"/> values.
+            </summary>
+            <param name="value">The comma-separated string to convert.</param>
+            <returns>An array of <see cref="T:System.Boolean"/> values.</returns>
+            <exception cref="T:Atrc.Exceptions.AtrcInvalidTypeConversionException">
+            Thrown if any part of the string cannot be converted to a boolean.
+            </exception>
+        </member>
+        <member name="M:Atrc.Core.StandardLibrary.AtrcConversions.ToStringArray(System.String)">
+            <summary>
+            Converts a comma-separated string of values to an array of <see cref="T:System.String"/> values.
+            </summary>
+            <param name="value">The comma-separated string to convert.</param>
+            <returns>An array of <see cref="T:System.String"/> values.</returns>
         </member>
     </members>
 </doc>
