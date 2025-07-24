@@ -2,95 +2,173 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Claude Code Updates this file automatically.
 ## Project Overview
 
-ATRC is a C/C++ resource/configuration file library written in C++17 with a C wrapper. It processes ATRC files which are configuration files with preprocessing directives similar to C preprocessor but with variable substitution and platform-specific conditionals.
+ATRC is a high-performance .NET library for ATRC configuration files, providing 100% feature parity with the original C++ implementation. This is a C# conversion/rewrite project currently on branch `convert-to-csharp`. The library processes ATRC files which are configuration files with preprocessing directives, variable substitution, and platform-specific conditionals.
 
 ## Architecture
 
-The project follows a standard CMake-based C/C++ library structure:
+The project follows a modern .NET library structure with multi-targeting support:
 
-- **Core Library (`ATRC/`)**: Contains the main library implementation
-  - `ATRC.h`: Main header with C/C++ API definitions
-  - `core_dev.cpp`: Core C++ implementation
-  - `c.c` and `c_cpp.cpp`: C wrapper implementation
-  - `filehandler2.cpp`: File I/O operations
-  - `ATRCFiledata.cpp`: Data structure management
-  - `atrc_stdlib.cpp`: Standard library functions
+### Core Structure
+- **`src/Atrc.Core/`**: Main library targeting .NET Standard 2.0, .NET 6.0, and .NET 8.0
+  - `Models/`: Core data structures (AtrcFileData, AtrcBlock, AtrcVariable, AtrcKey)
+  - `Parsing/`: ATRC file parser implementation
+  - `Preprocessing/`: Preprocessor system for conditionals and platform detection
+  - `StandardLibrary/`: Type conversion utilities (AtrcConversions)
+  - `Exceptions/`: Custom exception hierarchy
 
-- **Test Suite (`ATRC.Test/`)**: Contains test executables and test ATRC files
-  - Tests are implemented in both C and C++ to verify both APIs
-  - `test.atrc`: Sample configuration file for testing
+- **`src/Atrc.Core.Tests/`**: Comprehensive test suite using xUnit
+  - `BasicAtrcTests.cs`: Core functionality tests
+  - `PreprocessorTests.cs`: Preprocessor system tests
+  - `VariableSubstitutionTests.cs`: Variable substitution tests
+  - `StandardLibraryTests.cs`: Type conversion tests
+  - `RealFileTests.cs`: Integration tests with real ATRC files
 
-- **Build System**: Multi-platform CMake configuration with presets for Windows, Linux, and macOS
+- **`samples/ConsoleExample/`**: Example console application demonstrating library usage
 
-## Key Components
-
-1. **ATRC_FD Class**: Main C++ interface for reading/writing ATRC files
-2. **C Wrapper Functions**: Provides C API for the library
-3. **Preprocessor System**: Handles variables, conditionals, and platform detection
-4. **Cross-platform Support**: Windows (Visual Studio), Linux (GCC), macOS builds
+### Key Components
+1. **AtrcFileData Class**: Main C# interface for reading/writing ATRC files (equivalent to ATRC_FD)
+2. **AtrcParser**: Handles parsing of ATRC file format
+3. **AtrcPreprocessor**: Processes conditionals, variables, and platform detection
+4. **Type Conversion System**: Provides safe conversions between string values and .NET types
 
 ## Common Development Commands
 
-### Building the Project
+### Building the Library
 
-**Linux (current platform):**
 ```bash
-# Configure and build using preset
-cmake --preset linux-x64-debug -B./out/linux-x64-debug/build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=./cmake/toolchain-linux-x64.cmake -DATRC_BUILD_TESTS=ON
-cmake --build ./out/linux-x64-debug/build --config Debug
+# Navigate to core library
+cd src/Atrc.Core
 
-# Or use the build script
-./scripts/build_linux.sh
-```
+# Build for all target frameworks
+dotnet build
 
-**Windows:**
-```cmd
-.\vs_run.bat
+# Build in Release mode
+dotnet build -c Release
+
+# Build for specific framework
+dotnet build --framework net8.0
 ```
 
 ### Running Tests
 
-**Linux:**
 ```bash
-# Build first, then run the test executable
-./out/linux-x64-debug/build/ATRC.Test/ATRC.Test
+# Navigate to test project
+cd src/Atrc.Core.Tests
+
+# Run all tests
+dotnet test
+
+# Run tests with detailed output
+dotnet test --verbosity normal
+
+# Run specific test class
+dotnet test --filter "FullyQualifiedName~BasicAtrcTests"
+
+# Run tests with coverage
+dotnet test --collect:"XPlat Code Coverage"
 ```
 
-**Windows:**
-```cmd
-.\scripts\run_test.bat
+### Sample Application
+
+```bash
+# Navigate to sample project
+cd samples/ConsoleExample
+
+# Build and run the example
+dotnet run
+
+# Or build first, then run
+dotnet build
+dotnet run
 ```
 
-### CMake Build Options
+### Package Creation
 
-- `ATRC_BUILD_TESTS=ON/OFF`: Enable/disable building tests (default: ON)
-- Available presets: `linux-x64-debug`, `linux-x64-release`, `windows-x64-debug`, `windows-x64-release`, etc.
+```bash
+# Navigate to core library
+cd src/Atrc.Core
+
+# Create NuGet package
+dotnet pack -c Release
+
+# Create package with specific version
+dotnet pack -c Release -p:PackageVersion=1.0.0
+```
 
 ## ATRC File Format
 
 ATRC files use a custom configuration format with:
+- Header: `#!ATRC` (optional)
 - Variables: `%variable%=value`
+- Private variables: `[PRIVATE]` section
 - Blocks: `[BlockName]`
 - Keys: `KeyName=Value`
+- Comments: `# Comment text`
 - Preprocessor directives: `#.IF`, `#.ELIF`, `#.ELSE`, `#.ENDIF`, `#.ERROR`
 - Platform detection: `WINDOWS`, `LINUX`, `UNIX`
 - Time injection: `%*%` (outputs current time percentage)
 
 ## Development Notes
 
-- The library is built as a shared library (DLL/SO)
-- C++17 standard is required
-- The project uses CMake presets for cross-platform builds
-- Test files include both C and C++ implementations to verify both APIs work correctly
-- The library handles file I/O, parsing, and provides both C and C++ interfaces
+- Multi-targeting: .NET Standard 2.0, .NET 6.0, .NET 8.0 for maximum compatibility
+- Async-first design with proper cancellation token support
+- Thread-safe concurrent collections for multi-threaded scenarios
+- Memory-efficient with proper disposal patterns
+- Comprehensive exception handling with custom exception hierarchy
+- XML documentation generation enabled for API documentation
+
+## API Usage Examples
+
+### Basic File Operations
+```csharp
+// Load existing file
+using var fileData = await AtrcFileData.LoadAsync("config.atrc", ReadMode.ReadOnly);
+
+// Create new file
+using var newFile = await AtrcFileData.LoadAsync("new.atrc", ReadMode.CreateAndRead);
+
+// Create empty in-memory instance
+using var empty = AtrcFileData.CreateEmpty();
+```
+
+### Reading Data
+```csharp
+// Read variables and keys
+string value = fileData.ReadVariable("variableName");
+string keyValue = fileData.ReadKey("blockName", "keyName");
+
+// Using indexer access
+string var = fileData["variableName"];
+string key = fileData["blockName.keyName"];
+string keyValue2 = fileData["blockName", "keyName"];
+```
+
+### Type Conversions
+```csharp
+// Safe type conversions using extension methods
+bool isDebug = fileData["debugMode"]?.ToBool() ?? false;
+int maxConn = fileData["maxConnections"]?.ToInt() ?? 0;
+double timeout = fileData["timeoutSeconds"]?.ToDouble() ?? 0.0;
+string[] formats = fileData["supportedFormats"]?.ToStringArray() ?? new string[0];
+```
 
 ## File Locations
 
-- Main header: `ATRC/include/ATRC.h`
-- Test files: `ATRC.Test/test.atrc` and `test.atrc` (root)
-- Build output: `out/` directory (gitignored)
-- Version info: `project/VERSION`
+- Main library: `src/Atrc.Core/`
+- Tests: `src/Atrc.Core.Tests/`
+- Examples: `samples/ConsoleExample/`
+- Sample ATRC files: `test.atrc`, `samples/ConsoleExample/sample.atrc`
 - Documentation: `docs/index.html`
+- Version info: `project/VERSION`
+
+## Current Status
+
+**Phase Status**: Phase 2C Complete (Core C# Implementation)
+- ✅ Complete C# library implementation
+- ✅ 100% feature parity with C++ version
+- ✅ Comprehensive test suite (12+ tests)
+- ✅ Multi-framework targeting
+- ✅ Example applications
+- ✅ NuGet package ready
